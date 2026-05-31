@@ -26,9 +26,8 @@ src/
     integration/  CustomerRegistryTest.java,
                   RepairOrderRegistryTest.java
 report/
-    seminar3-report.docx   The IMRaD report.
+    seminar3-report.pdf   The IMRaD report.
     sample-run.txt         Captured System.out output of one full run.
-    build-report.js        docx-js script used to generate the report.
 pom.xml                    Maven build (Java 17 + JUnit 5).
 ```
 
