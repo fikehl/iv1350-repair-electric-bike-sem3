@@ -27,6 +27,7 @@ src/
                   RepairOrderRegistryTest.java
 report/
     seminar3-report.pdf   The IMRaD report.
+    seminar3-report-updated.pdf    Updated IMRaD report.
     sample-run.txt         Captured System.out output of one full run.
 pom.xml                    Maven build (Java 17 + JUnit 5).
 ```
