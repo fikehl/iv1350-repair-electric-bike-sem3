@@ -146,34 +146,6 @@ public class RepairOrderTest {
                 "Estimated completion time was not after the creation time.");
     }
 
-    @Test
-    public void testPrintoutContainsKeyInformation() {
-        repairOrder.addDiagnosticReport(buildSampleReport());
-        repairOrder.accept(new Printer());
-        String printout = repairOrder.toDTO().getPrintout();
-        assertTrue(printout.contains("42"),
-                "Printout did not contain the repair order id.");
-        assertTrue(printout.contains("Anna Andersson"),
-                "Printout did not contain the customer's name.");
-        assertTrue(printout.contains("0701112233"),
-                "Printout did not contain the customer's phone number.");
-        assertTrue(printout.contains("Crescent"),
-                "Printout did not contain the bike's brand.");
-        assertTrue(printout.contains("Brakes squeaking."),
-                "Printout did not contain the customer's problem description.");
-        assertTrue(printout.contains("ACCEPTED"),
-                "Printout did not contain the repair order state.");
-        assertTrue(printout.contains("Total cost"),
-                "Printout did not contain the total cost line.");
-    }
-
-    @Test
-    public void testPrintoutMentionsMissingDiagnosticBeforeItIsAdded() {
-        String printout = repairOrder.toDTO().getPrintout();
-        assertTrue(printout.toLowerCase().contains("no diagnostic"),
-                "Printout did not indicate that no diagnostic report was added yet.");
-    }
-
     private DiagnosticReport buildSampleReport() {
         List<RepairTask> tasks = new ArrayList<>();
         tasks.add(new RepairTask("Replace front brake pads", new Amount(450)));

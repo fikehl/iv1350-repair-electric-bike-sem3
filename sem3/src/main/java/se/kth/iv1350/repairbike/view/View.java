@@ -1,5 +1,6 @@
 package se.kth.iv1350.repairbike.view;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import se.kth.iv1350.repairbike.controller.Controller;
@@ -11,9 +12,14 @@ import se.kth.iv1350.repairbike.model.RepairTask;
 /**
  * This program has no real view, this class instead simulates user input by
  * making hard-coded calls to the controller. Everything that is returned by
- * the controller is printed to {@code System.out}.
+ * the controller is printed to {@code System.out}. Since presentation is
+ * the responsibility of the view, this class formats the returned data-only
+ * DTOs itself before displaying them.
  */
 public class View {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     private final Controller controller;
 
     /**
@@ -43,7 +49,7 @@ public class View {
                 + " squeaks loudly when applied.";
         RepairOrderDTO afterProblem = controller.registerProblem(customer, problemDescription);
         System.out.println("System returned a new repair order:");
-        System.out.println(afterProblem.getPrintout());
+        System.out.println(formatRepairOrder(afterProblem));
 
         printSeparator();
         System.out.println("TECHNICIAN: Performing diagnostic and proposing repair tasks.");
@@ -55,15 +61,43 @@ public class View {
         RepairOrderDTO afterDiagnostic =
                 controller.registerDiagnostic(diagnosticDescription, proposedTasks);
         System.out.println("System returned the updated repair order:");
-        System.out.println(afterDiagnostic.getPrintout());
+        System.out.println(formatRepairOrder(afterDiagnostic));
 
         printSeparator();
         System.out.println("RECEPTIONIST: Customer accepts the proposed repair tasks."
                            + " Registering acceptance.");
         RepairOrderDTO afterAcceptance = controller.acceptRepairOrder();
         System.out.println("System returned the accepted repair order:");
-        System.out.println(afterAcceptance.getPrintout());
+        System.out.println(formatRepairOrder(afterAcceptance));
         printSeparator();
+    }
+
+    private String formatRepairOrder(RepairOrderDTO order) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Repair order id:      ").append(order.getRepairOrderId()).append("\n");
+        builder.append("State:                ").append(order.getState()).append("\n");
+        builder.append("Created:              ")
+               .append(order.getCreationTime().format(DATE_TIME_FORMATTER)).append("\n");
+        builder.append("Customer:             ").append(order.getCustomer().getName())
+               .append(", ").append(order.getCustomer().getPhoneNumber()).append("\n");
+        builder.append("Bike:                 ")
+               .append(order.getCustomer().getBike().getBrand()).append(" ")
+               .append(order.getCustomer().getBike().getModel()).append("\n");
+        builder.append("Problem description:  ").append(order.getProblemDescription()).append("\n");
+        if (order.getDiagnosticDescription() == null) {
+            builder.append("Diagnostic report:    (none yet)\n");
+        } else {
+            builder.append("Diagnostic report:    ")
+                   .append(order.getDiagnosticDescription()).append("\n");
+            builder.append("Proposed repair tasks:\n");
+            for (RepairTask task : order.getProposedTasks()) {
+                builder.append("  - ").append(task).append("\n");
+            }
+            builder.append("Total cost:           ").append(order.getTotalCost()).append("\n");
+        }
+        builder.append("Estimated completion: ")
+               .append(order.getEstimatedCompletionTime().format(DATE_TIME_FORMATTER));
+        return builder.toString();
     }
 
     private List<RepairTask> buildProposedTasks() {

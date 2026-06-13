@@ -6,9 +6,11 @@ import java.util.List;
 import se.kth.iv1350.repairbike.integration.CustomerDTO;
 
 /**
- * An immutable snapshot of a {@link RepairOrder}. Instances are created by
- * {@link RepairOrder#toDTO()} and are the only thing the view sees of a
- * repair order, so the model entity is kept intact.
+ * An immutable, data-only snapshot of a {@link RepairOrder}. Instances are
+ * created by {@link RepairOrder#toDTO()} and are the only thing the view
+ * sees of a repair order, so the model entity is kept intact. The DTO
+ * carries data and nothing else; how the data is presented is decided by
+ * whoever displays it.
  */
 public final class RepairOrderDTO {
     private final int repairOrderId;
@@ -20,7 +22,6 @@ public final class RepairOrderDTO {
     private final List<RepairTask> proposedTasks;
     private final Amount totalCost;
     private final LocalDateTime estimatedCompletionTime;
-    private final String printout;
 
     /**
      * Creates a new snapshot. Called only by {@link RepairOrder#toDTO()};
@@ -37,8 +38,6 @@ public final class RepairOrderDTO {
      * @param proposedTasks           The proposed repair tasks; may be empty.
      * @param totalCost               The total cost of the proposed tasks.
      * @param estimatedCompletionTime The estimated completion time.
-     * @param printout                A pre-formatted, human-readable printout
-     *                                of the entire repair order.
      */
     RepairOrderDTO(int repairOrderId,
                    CustomerDTO customer,
@@ -48,8 +47,7 @@ public final class RepairOrderDTO {
                    String diagnosticDescription,
                    List<RepairTask> proposedTasks,
                    Amount totalCost,
-                   LocalDateTime estimatedCompletionTime,
-                   String printout) {
+                   LocalDateTime estimatedCompletionTime) {
         this.repairOrderId = repairOrderId;
         this.customer = customer;
         this.problemDescription = problemDescription;
@@ -59,7 +57,6 @@ public final class RepairOrderDTO {
         this.proposedTasks = Collections.unmodifiableList(proposedTasks);
         this.totalCost = totalCost;
         this.estimatedCompletionTime = estimatedCompletionTime;
-        this.printout = printout;
     }
 
     /**
@@ -125,12 +122,5 @@ public final class RepairOrderDTO {
      */
     public LocalDateTime getEstimatedCompletionTime() {
         return estimatedCompletionTime;
-    }
-
-    /**
-     * @return A pre-formatted, human-readable printout of the entire order.
-     */
-    public String getPrintout() {
-        return printout;
     }
 }
